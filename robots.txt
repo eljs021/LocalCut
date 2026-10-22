@@ -1,7 +1,7 @@
 User-agent: MediaPartners-Google
 Allow: /
-
+ 
 User-agent: *
 Allow: /
-
-Sitemap: https://localcut.site
+ 
+Sitemap: https://localcut.site/sitemap.xml
