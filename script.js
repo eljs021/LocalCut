@@ -1,10 +1,19 @@
-const MAX_BYTES = 10 * 1024 * 1024; // 10MB
+/* ---------- Limits ----------
+   Warn above the WARN values, refuse above the MAX values.
+   File size and pixel count are checked separately: a small PNG can still
+   have a huge number of pixels, and pixels are what use up memory. */
+const MB = 1024 * 1024;
+const WARN_BYTES = 10 * MB;       // warn above 10MB
+const MAX_BYTES = 25 * MB;        // refuse above 25MB
+const WARN_PIXELS = 16_000_000;   // warn above 16 megapixels (e.g. 4608 x 3456)
+const MAX_PIXELS = 50_000_000;    // refuse above 50 megapixels (covers 48MP phone photos)
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
 const imageInput = document.getElementById('image-input');
 const uploadZone = document.getElementById('upload-zone');
 const statusLine = document.getElementById('status-line');
 const statusText = document.getElementById('status-text');
+const warningLine = document.getElementById('warning-line');
 const emptyPreview = document.getElementById('empty-preview');
 const outputImage = document.getElementById('output-image');
 const actions = document.getElementById('actions');
@@ -23,12 +32,42 @@ function setTheme(theme) {
 document.getElementById('theme-light').addEventListener('click', () => setTheme('light'));
 document.getElementById('theme-dark').addEventListener('click', () => setTheme('dark'));
 
-/* ---------- Status helper ---------- */
+/* ---------- Status and warning helpers ---------- */
 function setStatus(message, type = 'idle') {
   statusText.textContent = message;
   statusLine.classList.remove('is-idle', 'is-error', 'is-success');
   statusLine.classList.add(`is-${type}`);
 }
+
+function setWarning(message) {
+  warningLine.textContent = message;
+  warningLine.hidden = false;
+}
+
+function clearWarning() {
+  warningLine.textContent = '';
+  warningLine.hidden = true;
+}
+
+/* ---------- Image size helpers ---------- */
+function getImageSize(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Could not read image'));
+    };
+    img.src = url;
+  });
+}
+
+const formatMB = (bytes) => (bytes / MB).toFixed(1);
+const formatMP = (pixels) => (pixels / 1_000_000).toFixed(1);
 
 /* ---------- Background-removal engine ----------
    Loads @imgly/background-removal on first use. The AI model runs in
@@ -42,23 +81,66 @@ function loadEngine() {
 
 async function processImage(file) {
   if (!file || busy) return;
-
-  if (!ALLOWED.includes(file.type)) {
-    setStatus('Please choose a JPG, PNG or WEBP image.', 'error');
-    return;
-  }
-  if (file.size > MAX_BYTES) {
-    setStatus('That file is over 10MB. Please choose a smaller image.', 'error');
-    return;
-  }
-
   busy = true;
-  actions.hidden = true;
-  outputImage.style.display = 'none';
-  emptyPreview.style.display = '';
-  setStatus('Loading the background remover (first time only, this can take a moment)...');
+
+  let isLarge = false;
 
   try {
+    clearWarning();
+
+    /* 1. File type */
+    if (!ALLOWED.includes(file.type)) {
+      setStatus('Please choose a JPG, PNG or WEBP image.', 'error');
+      return;
+    }
+
+    /* 2. File size (cheap check first) */
+    if (file.size > MAX_BYTES) {
+      setStatus(
+        `That file is ${formatMB(file.size)}MB. The limit is ${MAX_BYTES / MB}MB, so please choose a smaller image.`,
+        'error'
+      );
+      return;
+    }
+
+    /* 3. Pixel count */
+    let size;
+    try {
+      size = await getImageSize(file);
+    } catch (e) {
+      setStatus('That image could not be read. It may be damaged or too large for this browser.', 'error');
+      return;
+    }
+    const pixels = size.width * size.height;
+
+    if (pixels > MAX_PIXELS) {
+      setStatus(
+        `That image is ${formatMP(pixels)} megapixels (${size.width} × ${size.height}). The limit is ${MAX_PIXELS / 1_000_000} megapixels, so please resize it and try again.`,
+        'error'
+      );
+      return;
+    }
+
+    /* 4. Warn (but carry on) for large images */
+    const bigFile = file.size > WARN_BYTES;
+    const bigPixels = pixels > WARN_PIXELS;
+    isLarge = bigFile || bigPixels;
+
+    if (isLarge) {
+      const details = [];
+      if (bigFile) details.push(`${formatMB(file.size)}MB`);
+      if (bigPixels) details.push(`${formatMP(pixels)} megapixels`);
+      setWarning(
+        `This is a large image (${details.join(', ')}). It will take longer to process, and phones or older devices may run out of memory. If it fails, try a smaller version.`
+      );
+    }
+
+    /* 5. Process */
+    actions.hidden = true;
+    outputImage.style.display = 'none';
+    emptyPreview.style.display = '';
+    setStatus('Loading the background remover (first time only, this can take a moment)...');
+
     const lib = await loadEngine();
     const removeBackground = lib.removeBackground || lib.default;
     setStatus('Removing background...');
@@ -80,7 +162,11 @@ async function processImage(file) {
   } catch (error) {
     console.error(error);
     enginePromise = null; // allow a retry
-    setStatus('Something went wrong loading the remover. Check your connection and try again.', 'error');
+    if (isLarge) {
+      setStatus('This image was too big for your device to process. Try a smaller version.', 'error');
+    } else {
+      setStatus('Something went wrong loading the remover. Check your connection and try again.', 'error');
+    }
   } finally {
     busy = false;
   }
