@@ -1,4 +1,5 @@
-const MAX_BYTES = 10 * 1024 * 1024; // 10MB
+const WARNING_BYTES = 10 * 1024 * 1024; // 10MB
+const MAX_BYTES = 25 * 1024 * 1024; // 25MB hard limit
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
 const imageInput = document.getElementById('image-input');
@@ -48,8 +49,24 @@ async function processImage(file) {
     return;
   }
   if (file.size > MAX_BYTES) {
-    setStatus('That file is over 10MB. Please choose a smaller image.', 'error');
+  setStatus('That file is over 25MB. Please choose a smaller image.', 'error');
+  return;
+}
+
+if (file.size > WARNING_BYTES) {
+  const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+
+  const proceed = window.confirm(
+    `This image is ${sizeMB}MB. Images over 10MB may use ` +
+    `a lot of memory and may fail on some devices, especially phones.\n\n` +
+    `Do you want to continue?`
+  );
+
+  if (!proceed) {
+    setStatus('Upload cancelled. Choose another image whenever you are ready.');
     return;
+  }
+}
   }
 
   busy = true;
