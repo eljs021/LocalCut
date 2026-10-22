@@ -298,9 +298,9 @@ body {
 .faq h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 800; }
 .faq h3 { margin: 18px 0 4px; font-size: .95rem; }
 .faq p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.65; }
-.faq a { color: var(--green-dark); text-decoration: none; font-weight: 600; }
-.faq a:hover { text-decoration: underline; }
 
-/* Links on the how-it-works page */
-.prose a { color: var(--green-dark); text-decoration: none; font-weight: 600; }
-.prose a:hover { text-decoration: underline; }
+/* Text links: normal colour, green on hover (FAQ, terms, privacy, how it works) */
+.faq a,
+.workspace a:not(.button-primary) { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; font-weight: 600; transition: color .2s ease; }
+.faq a:hover,
+.workspace a:not(.button-primary):hover { color: var(--green-dark); }
