@@ -135,7 +135,8 @@
         </label>
 
         <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp">
-        <small>Supports JPG, PNG, WEBP • Max size: 10MB</small>
+        <small>Supports JPG, PNG, WEBP • Max size: 25MB</small>
+        <p class="warning-line" id="warning-line" role="alert" hidden></p>
       </div>
 
       <div class="status-line" id="status-line">
@@ -191,10 +192,13 @@
   <p>No. The background is removed in your browser, on your own device, so your image isn't uploaded to LocalCut. The first time you use the tool, your browser downloads the files it needs, which is why the first image can take a little longer.</p>
 
   <h3>Which image formats can I use?</h3>
-  <p>JPG, PNG and WEBP, up to 10MB each.</p>
+  <p>JPG, PNG and WEBP, up to 25MB and 50 megapixels each. Images over 10MB or 16 megapixels will show a warning because they can be slow, especially on phones.</p>
 
   <h3>How do I save my image with a transparent background?</h3>
   <p>After the background is removed, click <strong>Download PNG</strong>. PNG keeps the transparent background.</p>
+
+  <h3>How does LocalCut work?</h3>
+  <p>LocalCut runs directly in your browser to separate the subject from the background, so your image never leaves your device. <a href="/how-it-works.html">Read the full explanation</a>.</p>
 
   <h3>Do I need to create an account?</h3>
   <p>No. Just choose an image and it works.</p>
