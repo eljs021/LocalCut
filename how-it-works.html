@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How LocalCut removes image backgrounds in your browser without uploading your photos, and what affects speed and quality.">
+  <meta name="theme-color" content="#f6fafc">
+  <link rel="canonical" href="https://localcut.site/how-it-works.html">
+  <title>How LocalCut Works — LocalCut</title>
+  <link rel="icon" type="image/svg+xml" href="/localcut-logo.svg">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try {
+      var t = localStorage.getItem('localcut-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="LocalCut home">
+        <svg class="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M9 7l22 26" stroke="#159b69" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M31 7L9 33" stroke="#159b69" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <circle cx="9" cy="33" r="4.2" fill="none" stroke="#397ff2" stroke-width="3.2"/>
+          <circle cx="31" cy="33" r="4.2" fill="none" stroke="#397ff2" stroke-width="3.2"/>
+          <circle cx="9" cy="7" r="3" fill="#159b69"/>
+          <circle cx="31" cy="7" r="3" fill="#159b69"/>
+        </svg>
+        <span class="brand-text">Local<span>Cut</span></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <article class="workspace">
+      <h1>How LocalCut works</h1>
+
+      <p>
+        LocalCut removes the background from a photo using an AI model that
+        runs inside your web browser. Your image is never sent to a LocalCut
+        server. This page explains what happens from the moment you pick a
+        file to the moment you download the result.
+      </p>
+
+      <h2>1. You choose an image</h2>
+      <p>
+        When you select or drop a JPG, PNG or WEBP file, LocalCut first checks
+        it on your device. It looks at the file type, the file size and the
+        number of pixels. Nothing is uploaded during these checks.
+      </p>
+
+      <h2>2. The tool loads (first time only)</h2>
+      <p>
+        The first time you use LocalCut, your browser downloads the
+        background-removal code and the AI model files it needs. This is why
+        your first image can take a little longer. Your browser keeps these
+        files, so later images usually start much faster.
+      </p>
+      <p>
+        LocalCut uses an open-source library called
+        <strong>@imgly/background-removal</strong>, loaded from the jsDelivr
+        content delivery network. The downloads contain the tool itself, not
+        your image.
+      </p>
+
+      <h2>3. The model finds the subject</h2>
+      <p>
+        The AI model looks at the shapes, edges and colours in your image and
+        decides which pixels belong to the main subject and which belong to
+        the background. It does this using your device's own processor, which
+        is why LocalCut needs no server farm and can stay free.
+      </p>
+
+      <h2>4. The background becomes transparent</h2>
+      <p>
+        The model's result is applied to your original image, making the
+        background pixels transparent. The image is saved as a PNG because
+        PNG supports transparency. Click <strong>Download PNG</strong> to
+        save it. The checkerboard pattern behind the preview shows which
+        areas are transparent.
+      </p>
+
+      <h2>Why your image stays on your device</h2>
+      <p>
+        All of the steps above happen in your browser tab. Your image and the
+        result are held in your device's memory and are cleared when you close
+        or refresh the page. To see exactly how it works, you can read the
+        <a href="https://github.com/eljs021/LocalCut" target="_blank" rel="noopener noreferrer">source code</a>.
+      </p>
+      <p>
+        LocalCut does display ads and load some resources from third-party
+        providers. See the <a href="/privacy.html">Privacy Policy</a> for
+        details about what those services may collect.
+      </p>
+
+      <h2>Size limits</h2>
+      <p>
+        Because processing happens on your own device, very large images can
+        be a problem. The amount of memory an image needs depends mostly on
+        how many pixels it has, not just its file size. LocalCut therefore
+        checks both:
+      </p>
+      <ul>
+        <li>Images up to 25MB and 50 megapixels are accepted.</li>
+        <li>Images over 10MB or 16 megapixels show a warning, because they
+          can be slow and may fail on phones or older computers.</li>
+        <li>Images over 25MB or 50 megapixels are refused. Resizing the
+          image first will fix this.</li>
+      </ul>
+
+      <h2>Getting better results</h2>
+      <ul>
+        <li>Choose a photo where the subject stands out clearly from the background.</li>
+        <li>Good lighting helps. Dark, blurry or low-contrast photos are harder to cut out.</li>
+        <li>Fine details such as hair, fur, glass and thin objects can be imperfect. Check the result before you use it.</li>
+        <li>If an image is slow or fails, try a smaller version of the same photo.</li>
+      </ul>
+
+      <p>
+        Results can vary from image to image. See the
+        <a href="/terms.html">Terms of Use</a> for more on this.
+      </p>
+
+      <p><a href="/">← Back to LocalCut</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p class="source-link">
+      <a href="https://github.com/eljs021/LocalCut">Source code (AGPL-3.0)</a>
+    </p>
+    <nav class="legal-links" aria-label="Legal information">
+      <a href="/privacy.html">Privacy Policy</a>
+      <span aria-hidden="true">·</span>
+      <a href="/terms.html">Terms of Use</a>
+    </nav>
+    <p class="footer-copy">© 2026 LocalCut</p>
+  </footer>
+</body>
+</html>
