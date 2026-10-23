@@ -178,6 +178,25 @@
 
       <div class="actions" id="actions" hidden>
         <a class="button-primary" id="download-link" download="localcut-result.png">Download PNG</a>
+
+        <div class="bg-picker">
+          <button type="button" class="button-secondary" id="bg-button" aria-haspopup="true" aria-expanded="false">
+            <span class="bg-dot" id="bg-dot"></span>
+            Background colour
+          </button>
+          <div class="bg-menu" id="bg-menu" role="group" aria-label="Background colour" hidden>
+            <button type="button" class="swatch swatch-transparent" data-color="transparent" aria-label="Transparent"></button>
+            <button type="button" class="swatch" data-color="#ffffff" style="background:#ffffff" aria-label="White"></button>
+            <button type="button" class="swatch" data-color="#000000" style="background:#000000" aria-label="Black"></button>
+            <button type="button" class="swatch" data-color="#159b69" style="background:#159b69" aria-label="Green"></button>
+            <button type="button" class="swatch" data-color="#2f80f7" style="background:#2f80f7" aria-label="Blue"></button>
+            <button type="button" class="swatch" data-color="#e5484d" style="background:#e5484d" aria-label="Red"></button>
+            <button type="button" class="swatch" data-color="#f5c542" style="background:#f5c542" aria-label="Yellow"></button>
+            <label class="swatch swatch-custom" title="Custom colour">
+              <input type="color" id="bg-custom" value="#ffffff" aria-label="Custom colour">
+            </label>
+          </div>
+        </div>
       </div>
 
       <hr class="divider">
@@ -216,6 +235,9 @@
 
   <h3>How do I save my image with a transparent background?</h3>
   <p>After the background is removed, click <strong>Download PNG</strong>. PNG keeps the transparent background.</p>
+
+  <h3>Can I add a background colour?</h3>
+  <p>Yes. After the background is removed, click <strong>Background colour</strong> and pick a colour or choose your own. The preview updates straight away and <strong>Download PNG</strong> saves the image with that colour. Choose the transparent option to go back to a see-through background.</p>
 
   <h3>How does LocalCut work?</h3>
   <p>LocalCut runs directly in your browser to separate the subject from the background, so your image never leaves your device. <a href="/how-it-works.html">Read the full explanation</a>.</p>

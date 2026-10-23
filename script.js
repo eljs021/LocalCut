@@ -18,10 +18,21 @@ const emptyPreview = document.getElementById('empty-preview');
 const outputImage = document.getElementById('output-image');
 const actions = document.getElementById('actions');
 const downloadLink = document.getElementById('download-link');
+const resultArea = document.getElementById('result-area');
+const bgButton = document.getElementById('bg-button');
+const bgMenu = document.getElementById('bg-menu');
+const bgDot = document.getElementById('bg-dot');
+const bgCustom = document.getElementById('bg-custom');
 
 let outputUrl = null;
 let enginePromise = null;
 let busy = false;
+
+/* Background colour state */
+let currentBlob = null;       // the transparent cutout from the engine
+let bgColor = 'transparent';  // 'transparent' or a hex colour
+let coloredUrl = null;        // object URL of the cutout flattened onto bgColor
+let applyToken = 0;           // guards against out-of-order async renders
 
 /* ---------- Theme toggle ---------- */
 function setTheme(theme) {
@@ -137,6 +148,7 @@ async function processImage(file) {
 
     /* 5. Process */
     actions.hidden = true;
+    closeBgMenu();
     outputImage.style.display = 'none';
     emptyPreview.style.display = '';
     setStatus('Loading the background remover (first time only, this can take a moment)...');
@@ -152,12 +164,13 @@ async function processImage(file) {
     });
 
     if (outputUrl) URL.revokeObjectURL(outputUrl);
+    currentBlob = blob;
     outputUrl = URL.createObjectURL(blob);
     outputImage.src = outputUrl;
     outputImage.style.display = 'block';
     emptyPreview.style.display = 'none';
-    downloadLink.href = outputUrl;
     actions.hidden = false;
+    await applyBackground();
     setStatus('Done! Your background has been removed.', 'success');
   } catch (error) {
     console.error(error);
@@ -171,6 +184,85 @@ async function processImage(file) {
     busy = false;
   }
 }
+
+/* ---------- Background colour ---------- */
+async function applyBackground() {
+  const token = ++applyToken;
+  const isTransparent = bgColor === 'transparent';
+
+  // Preview
+  resultArea.classList.toggle('checkerboard', isTransparent);
+  resultArea.style.backgroundColor = isTransparent ? '' : bgColor;
+
+  // Button dot + active swatch
+  bgDot.classList.toggle('has-color', !isTransparent);
+  bgDot.style.backgroundColor = isTransparent ? '' : bgColor;
+  bgMenu.querySelectorAll('.swatch[data-color]').forEach((s) => {
+    s.classList.toggle('is-active', s.dataset.color === bgColor);
+  });
+
+  if (!currentBlob) return;
+
+  // Transparent: download the original cutout
+  if (isTransparent) {
+    downloadLink.href = outputUrl;
+    downloadLink.download = 'localcut-result.png';
+    return;
+  }
+
+  // Coloured: draw the cutout over the colour and export that
+  try {
+    const bitmap = await createImageBitmap(currentBlob);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0);
+    if (bitmap.close) bitmap.close();
+
+    const out = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (token !== applyToken || !out) return; // a newer choice replaced this one
+
+    if (coloredUrl) URL.revokeObjectURL(coloredUrl);
+    coloredUrl = URL.createObjectURL(out);
+    downloadLink.href = coloredUrl;
+    downloadLink.download = 'localcut-result-background.png';
+  } catch (e) {
+    console.error(e);
+    setStatus('Could not apply that background colour. Try a smaller image.', 'error');
+  }
+}
+
+function closeBgMenu() {
+  bgMenu.hidden = true;
+  bgButton.setAttribute('aria-expanded', 'false');
+}
+
+bgButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const open = bgMenu.hidden;
+  bgMenu.hidden = !open;
+  bgButton.setAttribute('aria-expanded', String(open));
+});
+
+bgMenu.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const swatch = e.target.closest('.swatch[data-color]');
+  if (!swatch) return;
+  bgColor = swatch.dataset.color;
+  applyBackground();
+  closeBgMenu();
+});
+
+bgCustom.addEventListener('input', () => {
+  bgColor = bgCustom.value;
+  applyBackground();
+});
+
+document.addEventListener('click', closeBgMenu);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeBgMenu(); });
 
 /* ---------- Events ---------- */
 imageInput.addEventListener('change', (e) => {
@@ -192,4 +284,5 @@ uploadZone.addEventListener('drop', (e) => {
 
 window.addEventListener('beforeunload', () => {
   if (outputUrl) URL.revokeObjectURL(outputUrl);
+  if (coloredUrl) URL.revokeObjectURL(coloredUrl);
 });

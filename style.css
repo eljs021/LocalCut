@@ -304,3 +304,58 @@ body {
 .workspace a:not(.button-primary) { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; font-weight: 600; transition: color .2s ease; }
 .faq a:hover,
 .workspace a:not(.button-primary):hover { color: var(--green-dark); }
+
+/* Background colour picker */
+.actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
+.actions[hidden] { display: none; }
+
+.button-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 11px 22px; border-radius: 6px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line);
+  font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer;
+  transition: transform .15s, border-color .2s;
+}
+.button-secondary:hover { transform: translateY(-1px); border-color: var(--blue); }
+.button-secondary:focus-visible { outline: 3px solid #a6c8ff; outline-offset: 3px; }
+
+.bg-picker { position: relative; }
+.bg-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(45deg, #cfd6e0 25%, transparent 25%, transparent 75%, #cfd6e0 75%),
+    linear-gradient(45deg, #cfd6e0 25%, transparent 25%, transparent 75%, #cfd6e0 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 4px 4px;
+}
+.bg-dot.has-color { background-image: none; }
+
+.bg-menu {
+  position: absolute; bottom: calc(100% + 10px); right: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; gap: 8px; width: max-content; max-width: 260px;
+  padding: 12px; border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 12px 40px rgba(36, 63, 92, .18);
+}
+.bg-menu[hidden] { display: none; }
+
+.swatch {
+  width: 28px; height: 28px; padding: 0; border-radius: 50%;
+  border: 2px solid var(--line); cursor: pointer; position: relative; overflow: hidden;
+}
+.swatch:hover { transform: scale(1.1); }
+.swatch.is-active { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(47,128,247,.3); }
+.swatch:focus-visible { outline: 3px solid #a6c8ff; outline-offset: 2px; }
+.swatch-transparent {
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #cfd6e0 25%, transparent 25%, transparent 75%, #cfd6e0 75%),
+    linear-gradient(45deg, #cfd6e0 25%, transparent 25%, transparent 75%, #cfd6e0 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+.swatch-custom { background: conic-gradient(#e5484d, #f5c542, #159b69, #2f80f7, #a855f7, #e5484d); }
+.swatch-custom input { position: absolute; inset: -6px; width: 44px; height: 44px; opacity: 0; cursor: pointer; }
