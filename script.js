@@ -80,6 +80,15 @@ function getImageSize(file) {
 const formatMB = (bytes) => (bytes / MB).toFixed(1);
 const formatMP = (pixels) => (pixels / 1_000_000).toFixed(1);
 
+/* ---------- Anonymous usage counts ----------
+   Sends only an event name (no image, file name or size) to Google Analytics.
+   Consent mode decides whether it is counted for visitors in the UK, EEA and Switzerland. */
+function track(eventName) {
+  try {
+    if (typeof gtag === 'function') gtag('event', eventName);
+  } catch (e) { /* analytics must never break the tool */ }
+}
+
 /* ---------- Background-removal engine ----------
    Loads @imgly/background-removal on first use. The AI model runs in
    your browser; the image itself is never uploaded. */
@@ -147,6 +156,7 @@ async function processImage(file) {
     }
 
     /* 5. Process */
+    track('image_uploaded');
     actions.hidden = true;
     closeBgMenu();
     outputImage.style.display = 'none';
@@ -172,6 +182,7 @@ async function processImage(file) {
     actions.hidden = false;
     await applyBackground();
     setStatus('Done! Your background has been removed.', 'success');
+    track('background_removed');
   } catch (error) {
     console.error(error);
     enginePromise = null; // allow a retry
@@ -281,6 +292,8 @@ uploadZone.addEventListener('drop', (e) => {
   const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
   if (file) processImage(file);
 });
+
+downloadLink.addEventListener('click', () => track('image_downloaded'));
 
 window.addEventListener('beforeunload', () => {
   if (outputUrl) URL.revokeObjectURL(outputUrl);
