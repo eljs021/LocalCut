@@ -33,6 +33,7 @@ let currentBlob = null;       // the transparent cutout from the engine
 let bgColor = 'transparent';  // 'transparent' or a hex colour
 let coloredUrl = null;        // object URL of the cutout flattened onto bgColor
 let applyToken = 0;           // guards against out-of-order async renders
+let downloadReady = false;    // true only when the download link points at the file matching the chosen colour
 
 /* ---------- Theme toggle ---------- */
 function setTheme(theme) {
@@ -167,9 +168,22 @@ async function processImage(file) {
     const removeBackground = lib.removeBackground || lib.default;
     setStatus('Removing background...');
 
+    /* The library reports several separate stages (downloading model files,
+       then running the model), each with its own 0-100% counter. Showing those
+       counters directly made the percentage jump backwards, so we show one
+       clear message per stage instead. */
+    let lastStage = '';
     const blob = await removeBackground(file, {
       progress: (key, current, total) => {
-        if (total) setStatus(`Working... ${Math.round((current / total) * 100)}%`);
+        if (!total) return;
+        const stage = String(key).startsWith('fetch') ? 'download' : 'process';
+        if (stage === lastStage) return;
+        lastStage = stage;
+        if (stage === 'download') {
+          setStatus('Downloading the model (first time only, about 20 seconds)...');
+        } else {
+          setStatus('Removing background...');
+        }
       }
     });
 
@@ -185,6 +199,7 @@ async function processImage(file) {
     track('background_removed');
   } catch (error) {
     console.error(error);
+    track('removal_failed');
     enginePromise = null; // allow a retry
     if (isLarge) {
       setStatus('This image was too big for your device to process. Try a smaller version.', 'error');
@@ -200,6 +215,9 @@ async function processImage(file) {
 async function applyBackground() {
   const token = ++applyToken;
   const isTransparent = bgColor === 'transparent';
+
+  // Until the matching file is ready, the download link must not be used
+  downloadReady = false;
 
   // Preview
   resultArea.classList.toggle('checkerboard', isTransparent);
@@ -218,6 +236,7 @@ async function applyBackground() {
   if (isTransparent) {
     downloadLink.href = outputUrl;
     downloadLink.download = 'localcut-result.png';
+    downloadReady = true;
     return;
   }
 
@@ -240,6 +259,7 @@ async function applyBackground() {
     coloredUrl = URL.createObjectURL(out);
     downloadLink.href = coloredUrl;
     downloadLink.download = 'localcut-result-background.png';
+    downloadReady = true;
   } catch (e) {
     console.error(e);
     setStatus('Could not apply that background colour. Try a smaller image.', 'error');
@@ -293,7 +313,16 @@ uploadZone.addEventListener('drop', (e) => {
   if (file) processImage(file);
 });
 
-downloadLink.addEventListener('click', () => track('image_downloaded'));
+downloadLink.addEventListener('click', (e) => {
+  // If a colour was just picked and its file is still being made, don't
+  // download the previous (wrong) file. Ask the person to click again.
+  if (!downloadReady) {
+    e.preventDefault();
+    setStatus('Applying your background colour. Click Download again in a moment.');
+    return;
+  }
+  track('image_downloaded');
+});
 
 window.addEventListener('beforeunload', () => {
   if (outputUrl) URL.revokeObjectURL(outputUrl);
