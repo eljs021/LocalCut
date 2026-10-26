@@ -100,6 +100,24 @@ function loadEngine() {
   return enginePromise;
 }
 
+/* ---------- Scroll to the result ----------
+   After a cutout is ready, bring the result and the Download button into view.
+   On tall screens the status line goes to the top; on short screens (phones)
+   the Download button is kept in view instead. Never throws, so it cannot
+   interfere with the tool itself. */
+function scrollToResult() {
+  try {
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior = calm ? 'auto' : 'smooth';
+    const span = actions.getBoundingClientRect().bottom - statusLine.getBoundingClientRect().top;
+    if (span <= window.innerHeight) {
+      statusLine.scrollIntoView({ behavior, block: 'start' });
+    } else {
+      actions.scrollIntoView({ behavior, block: 'end' });
+    }
+  } catch (e) { /* scrolling is a nicety, never a failure */ }
+}
+
 async function processImage(file) {
   if (!file || busy) return;
   busy = true;
@@ -197,6 +215,8 @@ async function processImage(file) {
     await applyBackground();
     setStatus('Done! Your background has been removed.', 'success');
     track('background_removed');
+    try { await outputImage.decode(); } catch (e) { /* image not decodable yet: scroll anyway */ }
+    scrollToResult();
   } catch (error) {
     console.error(error);
     track('removal_failed');
