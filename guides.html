@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Cloudflare Web Analytics -->
+  <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0d9acc1e3f944b2da45c2d6537360dd1"}'></script>
+
+  <!-- Google Analytics with consent mode (same setup as the home page) -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],
+      wait_for_update: 500
+    });
+    gtag('consent', 'default', { analytics_storage: 'granted' });
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRENV2N7Q4"></script>
+  <script>
+    gtag('js', new Date());
+    gtag('config', 'G-GRENV2N7Q4');
+  </script>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9201729569192953"
+     crossorigin="anonymous"></script>
+
+  <!-- Google ad blocking recovery -->
+  <script async src="https://fundingchoicesmessages.google.com/i/pub-9201729569192953?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
+
+  <!-- NOTE: the optional "Google error protection" script from index.html is not copied here.
+       If you want it on this page too, paste that whole <script> block here unchanged. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalCut Guides: Background Removal, Transparent PNGs and Image Formats</title>
+  <meta name="description" content="Practical guides on removing image backgrounds, making transparent PNGs and choosing between PNG, WebP and JPG, from the free in-browser tool LocalCut.">
+  <meta name="theme-color" content="#f6fafc">
+  <link rel="canonical" href="https://localcut.site/guides/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LocalCut">
+  <meta property="og:title" content="LocalCut Guides: Background Removal, Transparent PNGs and Image Formats">
+  <meta property="og:description" content="Practical guides on removing image backgrounds, making transparent PNGs and choosing image formats.">
+  <meta property="og:url" content="https://localcut.site/guides/">
+  <meta property="og:image" content="https://localcut.site/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LocalCut Guides">
+  <meta name="twitter:description" content="Practical guides on removing image backgrounds, making transparent PNGs and choosing image formats.">
+  <meta name="twitter:image" content="https://localcut.site/og-image.png">
+
+  <link rel="icon" type="image/svg+xml" href="/localcut-logo.svg">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    /* Guides landing page: neutral colours so it works in light and dark mode */
+    .guides-hero { text-align: center; padding: 48px 16px 8px; }
+    .guides-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 12px; }
+    .guides-hero p { max-width: 640px; margin: 0 auto; line-height: 1.6; opacity: .85; }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 960px;
+      margin: 32px auto 24px;
+      padding: 0 16px;
+    }
+    .guide-card {
+      display: block;
+      padding: 20px;
+      border: 1px solid rgba(127, 127, 127, .3);
+      border-radius: 14px;
+      background: rgba(127, 127, 127, .07);
+      color: inherit;
+      text-decoration: none;
+    }
+    a.guide-card { transition: border-color .15s ease, transform .15s ease; }
+    a.guide-card:hover, a.guide-card:focus-visible { border-color: #159b69; transform: translateY(-2px); }
+    .guide-card h2 { font-size: 1.1rem; margin: 0 0 8px; line-height: 1.3; }
+    .guide-card p { margin: 0 0 14px; line-height: 1.5; opacity: .85; }
+    .guide-more { font-weight: 600; color: #159b69; }
+    .guide-tag {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(127, 127, 127, .4);
+      opacity: .75;
+    }
+    .guide-card.is-soon { opacity: .7; }
+
+    .guides-footer-cta { text-align: center; padding: 0 16px 48px; line-height: 1.8; }
+    .guides-footer-cta a { color: #159b69; font-weight: 600; }
+
+    @media (prefers-reduced-motion: reduce) {
+      a.guide-card { transition: none; }
+      a.guide-card:hover, a.guide-card:focus-visible { transform: none; }
+    }
+  </style>
+
+  <script>
+    // Apply saved theme before first paint to avoid a flash
+    try {
+      var t = localStorage.getItem('localcut-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="LocalCut home">
+        <svg class="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M9 7l22 26" stroke="#159b69" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M31 7L9 33" stroke="#159b69" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <circle cx="9" cy="33" r="4.2" fill="none" stroke="#397ff2" stroke-width="3.2"/>
+          <circle cx="31" cy="33" r="4.2" fill="none" stroke="#397ff2" stroke-width="3.2"/>
+          <circle cx="9" cy="7" r="3" fill="#159b69"/>
+          <circle cx="31" cy="7" r="3" fill="#159b69"/>
+        </svg>
+        <span class="brand-text">Local<span>Cut</span></span>
+      </a>
+
+      <nav class="trust-nav" aria-label="Product features">
+        <span class="trust-item">
+          <svg viewBox="0 0 24 24" class="ti green" aria-hidden="true">
+            <path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2zm-8 0V7a3 3 0 0 1 6 0v2H9z"/>
+          </svg>
+          Browser-based processing
+        </span>
+        <span class="trust-item">
+          <svg viewBox="0 0 24 24" class="ti green" aria-hidden="true">
+            <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
+          </svg>
+          Fast &amp; Free
+        </span>
+        <span class="trust-item">
+          <svg viewBox="0 0 24 24" class="ti blue" aria-hidden="true">
+            <path d="M18.6 6.6c-2.4 0-4 1.7-5.6 3.8L11.6 12c-1.3 1.7-2.4 3-4.2 3a3 3 0 1 1 0-6c1.2 0 2.2.8 3 1.8l1.2-1.6C10.6 7.7 9.2 6.6 7.4 6.6a5.4 5.4 0 1 0 0 10.8c2.4 0 4-1.7 5.6-3.8l1.4-1.6c1.3-1.7 2.4-3 4.2-3a3 3 0 1 1 0 6c-1.2 0-2.2-.8-3-1.8l-1.2 1.6c1.1 1.5 2.5 2.6 4.2 2.6a5.4 5.4 0 1 0 0-10.8z"/>
+          </svg>
+          Unlimited
+        </span>
+      </nav>
+
+      <div class="theme-toggle" role="group" aria-label="Colour theme">
+        <button type="button" id="theme-light" aria-label="Light mode">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button type="button" id="theme-dark" aria-label="Dark mode">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="guides-hero">
+      <h1>LocalCut <span style="color:#159b69">Guides</span></h1>
+      <p>
+        Practical, plain-English guides on removing backgrounds, making transparent PNGs and
+        choosing the right image format, from the person who built LocalCut.
+      </p>
+    </section>
+
+    <!--
+      MOCK-UP NOTES
+      - Only the first card links anywhere. The rest are "Coming soon" placeholders.
+      - When a guide is published, change its <div class="guide-card is-soon"> into an
+        <a class="guide-card" href="..."> like the first one.
+      - Delete any card whose guide you decide not to publish. Don't deploy this page with
+        empty placeholders on the live site.
+      - Folder names below are placeholders: rename them to match the real guide URLs.
+    -->
+    <section class="guide-grid" aria-label="All guides">
+      <a class="guide-card" href="/guides/product-photos/">
+        <h2>Remove the background from a product photo</h2>
+        <p>Clean cutouts for Etsy, eBay and other shop listings, with tips on lighting and edges.</p>
+        <span class="guide-more">Read the guide &rarr;</span>
+      </a>
+
+      <div class="guide-card is-soon">
+        <h2>How to make a background transparent</h2>
+        <p>Step-by-step: get a transparent PNG from any photo and what to check before you use it.</p>
+        <span class="guide-tag">Coming soon</span>
+      </div>
+
+      <div class="guide-card is-soon">
+        <h2>PNG vs WebP vs JPG for cutouts</h2>
+        <p>Which format keeps transparency, which makes smaller files, and when to pick each.</p>
+        <span class="guide-tag">Coming soon</span>
+      </div>
+
+      <div class="guide-card is-soon">
+        <h2>Change a photo's background colour</h2>
+        <p>Swap in a white, coloured or custom background for listings and profile pictures.</p>
+        <span class="guide-tag">Coming soon</span>
+      </div>
+
+      <div class="guide-card is-soon">
+        <h2>Remove a background without uploading your photo</h2>
+        <p>How in-browser processing works, and why your image never has to leave your device.</p>
+        <span class="guide-tag">Coming soon</span>
+      </div>
+
+      <div class="guide-card is-soon">
+        <h2>Getting cleaner cutouts</h2>
+        <p>What makes a photo easy or hard to cut out, and what to expect with hair, fur and glass.</p>
+        <span class="guide-tag">Coming soon</span>
+      </div>
+    </section>
+
+    <p class="guides-footer-cta">
+      Ready to try it? <a href="/">Remove a background now</a>
+      &nbsp;&middot;&nbsp;
+      Curious how it works? <a href="/how-it-works.html">Read how LocalCut works</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="legal-links" aria-label="Site information">
+      <a href="/guides/">Guides</a>
+      <span aria-hidden="true">·</span>
+      <a href="/how-it-works.html">How it works</a>
+      <span aria-hidden="true">·</span>
+      <a href="/privacy.html">Privacy Policy</a>
+      <span aria-hidden="true">·</span>
+      <a href="/terms.html">Terms of Use</a>
+    </nav>
+
+    <p class="source-link">
+      <a href="https://github.com/eljs021/LocalCut">Source code (AGPL-3.0)</a>
+    </p>
+
+    <p class="footer-copy">© 2026 LocalCut</p>
+  </footer>
+
+  <script>
+    // Theme toggle (this page doesn't load script.js, which is only for the tool)
+    (function () {
+      var light = document.getElementById('theme-light');
+      var dark = document.getElementById('theme-dark');
+      function setTheme(theme) {
+        if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        else document.documentElement.removeAttribute('data-theme');
+        try { localStorage.setItem('localcut-theme', theme); } catch (e) {}
+      }
+      light.addEventListener('click', function () { setTheme('light'); });
+      dark.addEventListener('click', function () { setTheme('dark'); });
+    })();
+  </script>
+</body>
+</html>
