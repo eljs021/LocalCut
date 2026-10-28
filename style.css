@@ -252,52 +252,16 @@ body {
   .upload-zone { min-height: 230px; padding: 22px 12px; }
 }
 
-/* Footer and legal links */
-.site-footer {
-  width: 100%;
-  margin: 28px auto 20px;
-  padding: 24px 16px;
-  text-align: center;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-}
-
-.site-footer .source-link {
-  margin: 0 0 10px;
-  font-size: .75rem;
-  text-align: center;
-}
-
-.site-footer .legal-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: .8rem;
-}
-
-.site-footer a {
-  color: var(--muted);
-  text-decoration: none;
-  transition: color .2s ease;
-}
-
-.site-footer a:hover {
-  color: var(--green);
-  text-decoration: underline;
-}
-
-.site-footer .footer-copy {
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-size: .7rem;
-}
 /* FAQ */
 .faq { margin-top: 24px; padding: 24px; border-radius: 20px; background: var(--surface); box-shadow: 0 12px 50px rgba(36, 63, 92, .08); }
 .faq h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 800; }
 .faq h3 { margin: 18px 0 4px; font-size: .95rem; }
 .faq p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.65; }
+
+/* FAQ lists (how-to steps and bullet lists) */
+.faq ol, .faq ul { margin: 0 0 12px; padding-left: 22px; color: var(--muted); font-size: .85rem; line-height: 1.65; }
+.faq li { margin-bottom: 4px; }
+.faq li strong { color: var(--ink); }
 
 /* Text links: normal colour, green on hover (FAQ, terms, privacy, how it works) */
 .faq a,
@@ -359,3 +323,174 @@ body {
 }
 .swatch-custom { background: conic-gradient(#e5484d, #f5c542, #159b69, #2f80f7, #a855f7, #e5484d); }
 .swatch-custom input { position: absolute; inset: -6px; width: 44px; height: 44px; opacity: 0; cursor: pointer; }
+
+
+/* ==========================================================
+   FOOTER  (a card that matches the FAQ / workspace cards)
+   Markup it styles:
+   .site-footer
+     .footer-tools   > .footer-heading + .tool-links > a...
+     .legal-links    > a... (with <span> separators)
+     .source-link    > a
+     .footer-copy
+   ========================================================== */
+
+.site-footer {
+  width: min(100% - 36px, 976px);
+  margin: 40px auto 32px;
+  padding: 32px 22px 22px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 12px 50px rgba(36, 63, 92, .08);
+}
+
+/* Section headings ("More tools" and "Info") */
+.site-footer .footer-heading,
+.site-footer .legal-links::before {
+  display: block;
+  margin: 0 0 14px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Shared pill style for every footer link */
+.site-footer .tool-links a,
+.site-footer .legal-links a,
+.site-footer .source-link a {
+  display: block;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--zone-bg);
+  color: var(--ink);
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: border-color .2s ease, color .2s ease, background .2s ease,
+              transform .15s ease, box-shadow .2s ease;
+}
+
+.site-footer .tool-links a:hover,
+.site-footer .tool-links a:focus-visible,
+.site-footer .legal-links a:hover,
+.site-footer .legal-links a:focus-visible,
+.site-footer .source-link a:hover,
+.site-footer .source-link a:focus-visible {
+  border-color: var(--green);
+  color: var(--green-dark);
+  background: var(--surface);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(21, 155, 105, .16);
+}
+
+.site-footer .tool-links a:focus-visible,
+.site-footer .legal-links a:focus-visible,
+.site-footer .source-link a:focus-visible {
+  outline: 3px solid #a6c8ff;
+  outline-offset: 2px;
+}
+
+.site-footer .tool-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.site-footer .legal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+.site-footer .legal-links span { display: none; }
+.site-footer .legal-links::before { content: "Info"; }
+
+.site-footer .source-link {
+  margin: 8px 0 0;
+  text-align: center;
+}
+
+.site-footer .footer-tools { margin-bottom: 28px; }
+
+.site-footer .footer-copy {
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+/* Desktop: More tools on the left (4 stacked pills + the 5th beside them), Info on the right */
+@media (min-width: 701px) {
+  .site-footer {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-template-rows: auto 1fr;   /* extra height goes to row 2 so Source code sits right under Terms */
+    justify-content: center;
+    column-gap: 120px;
+    row-gap: 0;
+    align-items: start;
+    padding: 36px 40px 22px;
+  }
+
+  .site-footer .footer-tools {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin-bottom: 0;
+  }
+
+  /* First 4 pills fill column 1 top to bottom; the 5th flows into column 2 */
+  .site-footer .tool-links {
+    display: grid;
+    grid-template-rows: repeat(4, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: 200px;
+    gap: 8px 12px;
+  }
+
+  .site-footer .legal-links {
+    grid-column: 2;
+    grid-row: 1;
+    width: 210px;
+  }
+
+  .site-footer .source-link {
+    grid-column: 2;
+    grid-row: 2;
+    width: 210px;
+  }
+
+  .site-footer .footer-copy {
+    grid-column: 1 / -1;
+    margin-top: 32px;
+  }
+}
+
+/* Mobile: stack everything centred, links as wrapping pills */
+@media (max-width: 700px) {
+  .site-footer .tool-links,
+  .site-footer .legal-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .site-footer .legal-links::before {
+    flex: 0 0 100%;
+    margin-bottom: 6px;
+  }
+  .site-footer .tool-links a,
+  .site-footer .legal-links a,
+  .site-footer .source-link a {
+    display: inline-block;
+    padding: 7px 14px;
+  }
+  .site-footer .source-link { margin-top: 10px; }
+}
