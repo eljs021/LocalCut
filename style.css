@@ -348,8 +348,7 @@ body {
 }
 
 /* Section headings ("More tools" and "Info") */
-.site-footer .footer-heading,
-.site-footer .legal-links::before {
+.site-footer .footer-heading {
   display: block;
   margin: 0 0 14px;
   font-size: .7rem;
@@ -363,7 +362,7 @@ body {
 .site-footer .tool-links a,
 .site-footer .legal-links a,
 .site-footer .source-link a {
-  display: block;
+  display: inline-block;
   padding: 8px 16px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -406,15 +405,16 @@ body {
 
 .site-footer .legal-links {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   margin: 0;
 }
 .site-footer .legal-links span { display: none; }
-.site-footer .legal-links::before { content: "Info"; }
 
 .site-footer .source-link {
-  margin: 8px 0 0;
+  margin: 14px 0 0;
   text-align: center;
 }
 
@@ -428,69 +428,10 @@ body {
   font-size: .72rem;
 }
 
-/* Desktop: More tools on the left (4 stacked pills + the 5th beside them), Info on the right */
-@media (min-width: 701px) {
-  .site-footer {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    grid-template-rows: auto 1fr;   /* extra height goes to row 2 so Source code sits right under Terms */
-    justify-content: center;
-    column-gap: 120px;
-    row-gap: 0;
-    align-items: start;
-    padding: 36px 40px 22px;
-  }
-
-  .site-footer .footer-tools {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    margin-bottom: 0;
-  }
-
-  /* First 4 pills fill column 1 top to bottom; the 5th flows into column 2 */
-  .site-footer .tool-links {
-    display: grid;
-    grid-template-rows: repeat(4, auto);
-    grid-auto-flow: column;
-    grid-auto-columns: 200px;
-    gap: 8px 12px;
-  }
-
-  .site-footer .legal-links {
-    grid-column: 2;
-    grid-row: 1;
-    width: 210px;
-  }
-
-  .site-footer .source-link {
-    grid-column: 2;
-    grid-row: 2;
-    width: 210px;
-  }
-
-  .site-footer .footer-copy {
-    grid-column: 1 / -1;
-    margin-top: 32px;
-  }
-}
-
-/* Mobile: stack everything centred, links as wrapping pills */
+/* Footer is a single centred block at every width:
+   links in a wrapping row, source link below, copyright last. */
 @media (max-width: 700px) {
-  .site-footer .tool-links,
-  .site-footer .legal-links {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .site-footer .legal-links::before {
-    flex: 0 0 100%;
-    margin-bottom: 6px;
-  }
-  .site-footer .tool-links a,
   .site-footer .legal-links a,
-  .site-footer .source-link a {
-    display: inline-block;
-    padding: 7px 14px;
-  }
+  .site-footer .source-link a { padding: 7px 14px; }
   .site-footer .source-link { margin-top: 10px; }
 }
