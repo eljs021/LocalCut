@@ -1,35 +1,28 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://localcut.site</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://localcut.site/</loc>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://localcut.site/privacy.html</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://localcut.site/terms.html</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://localcut.site/how-it-works.html</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
-    <loc>https://localcut.site/white-background-product-photos.html</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://localcut.site/guides.html</loc>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
-    <loc>https://localcut.site/secure-private-background-remover.html</loc>
-    <lastmod>2026-10-27</lastmod>
-  </url>
-  <url>
-    <loc>https://localcut.site/convert-jpg-to-transparent-png.html</loc>
-    <lastmod>2026-10-27</lastmod>
-  </url>
-  <url>
-    <loc>https://localcut.site/passport-photo-background.html</loc>
+    <loc>https://localcut.site/guides/product-photos.html</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
 </urlset>
