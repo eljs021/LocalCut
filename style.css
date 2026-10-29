@@ -468,3 +468,7 @@ body {
 .guide .guide-cta { margin: 32px 0 0; padding-top: 24px; border-top: 1px solid var(--line); text-align: center; }
 .guide .guide-cta p { margin-bottom: 14px; color: var(--muted); }
 @media (max-width: 700px) { .guide { padding: 24px 18px; } }
+
+/* Buttons inside FAQ cards keep button styling */
+.faq a.button-primary,
+.faq a.button-primary:hover { color: #fff; text-decoration: none; }
