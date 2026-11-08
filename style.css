@@ -472,3 +472,11 @@ body {
 /* Buttons inside FAQ cards keep button styling */
 .faq a.button-primary,
 .faq a.button-primary:hover { color: #fff; text-decoration: none; }
+
+/* Support / tip line */
+.support-line {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: .85rem;
+  color: var(--muted);
+}
